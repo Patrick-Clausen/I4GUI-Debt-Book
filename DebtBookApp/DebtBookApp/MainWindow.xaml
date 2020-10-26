@@ -32,6 +32,6 @@
 
         <ListBox Grid.Row="2" Grid.Column="0" Margin="10" ScrollViewer.VerticalScrollBarVisibility="Visible"></ListBox>
 
-        <Button Grid.Row="2" Grid.Column="1" VerticalAlignment="Top" Margin="10">Add</Button>
+        <Button Grid.Row="2" Grid.Column="1" VerticalAlignment="Top" Margin="10">Add debtor</Button>
     </Grid>
 </Window>
