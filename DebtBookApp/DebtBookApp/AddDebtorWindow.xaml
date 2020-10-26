@@ -5,8 +5,32 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DebtBookApp"
         mc:Ignorable="d"
-        Title="AddDebtorWindow" Height="450" Width="800">
+        Title="Add debtor" ResizeMode="NoResize" Height="150" Width="300">
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5">Name</Label>
+        <TextBox Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Margin="5"></TextBox>
+
+        <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5">Initial value</Label>
+        <TextBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Margin="5"></TextBox>
+
+        <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0" VerticalAlignment="Center" Margin="5">Save</Button>
+            <Button Grid.Column="1" VerticalAlignment="Center" Margin="5">Cancel</Button>
+        </Grid>
     </Grid>
 </Window>
