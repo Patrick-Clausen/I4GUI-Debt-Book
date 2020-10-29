@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DebtBookApp"
         mc:Ignorable="d"
-        Title="Add debtor" ResizeMode="NoResize" Height="150" Width="300">
+        Title="Add debtor" ResizeMode="NoResize" Height="150" Width="300" DialogResult="{Binding Path=DebtorCreated}">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"></ColumnDefinition>

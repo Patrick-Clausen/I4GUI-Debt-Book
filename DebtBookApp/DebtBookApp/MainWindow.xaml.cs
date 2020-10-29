@@ -24,5 +24,10 @@ namespace DebtBookApp
         {
             InitializeComponent();
         }
+
+        public void OnListViewItemDoubleClicked(object sender, RoutedEventArgs e)
+        {
+            ((MainWindowViewModel)this.DataContext).ListViewItemDoubleClickedCommand.Execute(DebtorList.SelectedItem);
+        }
     }
 }

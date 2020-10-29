@@ -6,6 +6,15 @@
         xmlns:local="clr-namespace:DebtBookApp"
         mc:Ignorable="d"
         Title="Debt Book" Height="450" MinHeight="300" Width="800" MinWidth="400">
+<Window.DataContext>
+    <local:MainWindowViewModel/>
+</Window.DataContext>
+<Window.Resources>
+    <Style TargetType="ListViewItem">
+        <EventSetter Event="MouseDoubleClick" Handler="OnListViewItemDoubleClicked"></EventSetter>
+    </Style>
+</Window.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="0.5*"></RowDefinition>
@@ -30,8 +39,15 @@
         
         <Label Grid.Row="1" Grid.Column="0" FontWeight="Bold" FontSize="16">Debts</Label>
 
-        <ListBox Grid.Row="2" Grid.Column="0" Margin="10" ScrollViewer.VerticalScrollBarVisibility="Visible"></ListBox>
+        <ListView x:Name="DebtorList" Grid.Row="2" Grid.Column="0" Margin="10" ScrollViewer.VerticalScrollBarVisibility="Visible" ItemsSource="{Binding Path=Debtors}">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Name" Width="Auto" DisplayMemberBinding="{Binding Path=Name}"></GridViewColumn>
+                    <GridViewColumn Header="Debt" Width="Auto" DisplayMemberBinding="{Binding Path=Debt}"></GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
 
-        <Button Grid.Row="2" Grid.Column="1" VerticalAlignment="Top" Margin="10">Add debtor</Button>
+        <Button Grid.Row="2" Grid.Column="1" VerticalAlignment="Top" Margin="10" Command="{Binding Path=AddDebtorButtonPressedCommand}">Add debtor</Button>
     </Grid>
 </Window>
