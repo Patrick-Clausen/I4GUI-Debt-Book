@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows.Input;
 using Prism.Commands;
 using Prism.Mvvm;
 
@@ -26,6 +27,8 @@ namespace DebtBookApp
             set { SetProperty(ref _debtorToCreate, value); }
         }
 
+        public double InitialValue { get; set; }
+
 
         public bool IsValid
         {
@@ -33,8 +36,6 @@ namespace DebtBookApp
             {
                 bool isValid = true;
                 if (string.IsNullOrWhiteSpace(DebtorToCreate.Name))
-                    isValid = false;
-                if (DebtorToCreate.Debt <= 0)
                     isValid = false;
 
                 return isValid;
@@ -44,9 +45,9 @@ namespace DebtBookApp
 
         #region Commands
 
-        DelegateCommand _SaveBtnCommand;
+        ICommand _SaveBtnCommand;
 
-        public DelegateCommand SaveBtnCommand
+        public ICommand SaveBtnCommand
         {
             get
             {
@@ -59,6 +60,10 @@ namespace DebtBookApp
 
         private void SaveBtnCommand_Execute()
         {
+            if (InitialValue != 0)
+            {
+                DebtorToCreate.Debts.Add(new Debt(InitialValue, DateTime.Now));
+            }
             DebtorCreated = true;
         }
 

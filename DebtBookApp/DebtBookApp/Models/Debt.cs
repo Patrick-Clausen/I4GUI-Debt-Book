@@ -14,6 +14,12 @@ namespace DebtBookApp
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
+        public Debt(double initialValue, DateTime timestamp)
+        {
+            amount = initialValue;
+            date = timestamp;
+        }
+
         private double amount;
         public double Amount
         {
