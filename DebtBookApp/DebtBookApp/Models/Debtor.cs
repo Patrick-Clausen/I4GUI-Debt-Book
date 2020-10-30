@@ -2,29 +2,37 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Prism.Mvvm;
 
 namespace DebtBookApp
 {
-    public class Debtor : INotifyPropertyChanged
+    public class Debtor : BindableBase
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
 
         public Debtor()
         {
             debts = new ObservableCollection<Debt>();
+            debts.CollectionChanged += CollectionChangedHandler;
         }
 
         public Debtor(Debtor debtorToCopy)
         {
             //Copy constructor
-            Debts = new ObservableCollection<Debt>(debtorToCopy.Debts);
+            debts = new ObservableCollection<Debt>(debtorToCopy.Debts);
             Name = debtorToCopy.Name;
+            debts.CollectionChanged += CollectionChangedHandler;
+        }
+
+        public void CollectionChangedHandler(object sender, EventArgs e)
+        {
+            //Sort, resubscribe and raise property changes so list and total are updated
+            debts = new ObservableCollection<Debt>(debts.OrderBy(debts => debts.Date).ToList());
+            debts.CollectionChanged += CollectionChangedHandler;
+            RaisePropertyChanged("debts");
+            RaisePropertyChanged("Debt");
         }
 
         private ObservableCollection<Debt> debts;
@@ -36,10 +44,7 @@ namespace DebtBookApp
             }
             set
             {
-                debts = value;
-                OnPropertyChanged();
-                //Debt changes along with Debts
-                OnPropertyChanged("Debt");
+                SetProperty(ref debts, value);
             }
         }
 
@@ -66,8 +71,7 @@ namespace DebtBookApp
             }
             set
             {
-                name = value;
-                OnPropertyChanged();
+                SetProperty(ref name, value);
             }
         }
     }

@@ -2,19 +2,23 @@
 using Prism.Commands;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 using System.Windows;
 using System.Windows.Input;
+using Microsoft.Win32;
+using Newtonsoft.Json;
+using Prism.Mvvm;
 
 namespace DebtBookApp
 {
-    public class MainWindowViewModel : INotifyPropertyChanged
+    public class MainWindowViewModel : BindableBase
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
+
+        private string fileName = string.Empty;
 
         private ObservableCollection<Debtor> debtors;
 
@@ -26,14 +30,21 @@ namespace DebtBookApp
             }
             set
             {
-                debtors = value;
-                OnPropertyChanged();
+                SetProperty(ref debtors, value);
             }
         }
 
         public MainWindowViewModel()
         {
             debtors = new ObservableCollection<Debtor>();
+            debtors.CollectionChanged += DebtorCollectionChanged;
+        }
+
+        private void DebtorCollectionChanged(object sender, EventArgs e)
+        {
+            debtors = new ObservableCollection<Debtor>(debtors.OrderBy(debtors => debtors.Name));
+            debtors.CollectionChanged += DebtorCollectionChanged;
+            RaisePropertyChanged("Debtors");
         }
 
         private ICommand addDebtorButtonCommand;
@@ -73,18 +84,120 @@ namespace DebtBookApp
 
         private void ListViewItemDoubleClickedCommandHandler(Debtor doubleClickedDebtor)
         {
-            Debtor copiedDebtor = new Debtor(doubleClickedDebtor);
-            
             AddDebtWindow addDebtWindow = new AddDebtWindow();
-            AddDebtWindowViewModel addDebtWindowViewModel = new AddDebtWindowViewModel(ref copiedDebtor, ref addDebtWindow);
+            AddDebtWindowViewModel addDebtWindowViewModel = new AddDebtWindowViewModel(ref doubleClickedDebtor, ref addDebtWindow);
             addDebtWindow.DataContext = addDebtWindowViewModel;
             addDebtWindow.Owner = Application.Current.MainWindow;
 
-            if (addDebtWindow.ShowDialog() == true)
+            addDebtWindow.ShowDialog();
+        }
+
+        private ICommand newMenuCommand;
+
+        public ICommand NewMenuCommand
+        {
+            get
             {
-                doubleClickedDebtor.Debts = copiedDebtor.Debts;
-                doubleClickedDebtor.Name = copiedDebtor.Name;
+                return newMenuCommand ??
+                       (newMenuCommand = new DelegateCommand(NewMenuCommandHandler));
             }
+        }
+
+        public void NewMenuCommandHandler()
+        {
+            debtors = new ObservableCollection<Debtor>();
+            RaisePropertyChanged("debtors");
+        }
+
+        private ICommand openMenuCommand;
+
+        public ICommand OpenMenuCommand
+        {
+            get
+            {
+                return openMenuCommand ??
+                       (openMenuCommand = new DelegateCommand(OpenMenuCommandHandler));
+            }
+        }
+
+        public async void OpenMenuCommandHandler()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Debt file (*.dbt)|*.dbt";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                FileStream fs = new FileStream(@openFileDialog.FileName, FileMode.Open);
+                byte[] bytes = new byte[fs.Length];
+                await fs.ReadAsync(bytes);
+                fs.Close();
+                string jsonformatted = Encoding.UTF8.GetString(bytes);
+                debtors = JsonConvert.DeserializeObject<ObservableCollection<Debtor>>(jsonformatted);
+                RaisePropertyChanged("Debtors");
+                fileName = openFileDialog.FileName;
+            }
+            ((DelegateCommand)saveMenuCommand).RaiseCanExecuteChanged();
+        }
+
+        private ICommand saveMenuCommand;
+
+        public ICommand SaveMenuCommand
+        {
+            get
+            {
+                return saveMenuCommand ?? (saveMenuCommand = new DelegateCommand(
+                        SaveMenuCommandHandler, () => (!string.IsNullOrWhiteSpace(fileName))
+                    ));
+            }
+        }
+
+        private async void SaveMenuCommandHandler()
+        {
+            FileStream fs = new FileStream(fileName, FileMode.Truncate);
+            string jsonformatted = JsonConvert.SerializeObject(debtors);
+            await fs.WriteAsync(Encoding.UTF8.GetBytes(jsonformatted));
+            fs.Close();
+        }
+
+        private ICommand saveAsMenuCommand;
+
+        public ICommand SaveAsMenuCommand
+        {
+            get
+            {
+                return saveAsMenuCommand ??
+                       (saveAsMenuCommand = new DelegateCommand(SaveAsMenuCommandHandler));
+            }
+        }
+
+        public async void SaveAsMenuCommandHandler()
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Debt file (*.dbt)|*.dbt";
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                FileStream fs = new FileStream(@saveFileDialog.FileName, FileMode.Create);
+                string jsonformatted = JsonConvert.SerializeObject(debtors);
+                await fs.WriteAsync(Encoding.UTF8.GetBytes(jsonformatted));
+                fs.Close();
+                fileName = saveFileDialog.FileName;
+            }
+            ((DelegateCommand)saveMenuCommand).RaiseCanExecuteChanged();
+        }
+
+
+        private ICommand exitMenuCommand;
+
+        public ICommand ExitMenuCommand
+        {
+            get
+            {
+                return exitMenuCommand ??
+                       (exitMenuCommand = new DelegateCommand(ExitMenuCommandHandler));
+            }
+        }
+        public void ExitMenuCommandHandler()
+        {
+            Application.Current.MainWindow.Close();
         }
     }
 }

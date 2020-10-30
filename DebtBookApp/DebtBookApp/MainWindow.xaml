@@ -28,11 +28,11 @@
 
         <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
             <MenuItem Header="_File">
-                <MenuItem Header="_New"></MenuItem>
-                <MenuItem Header="_Open"></MenuItem>
-                <MenuItem Header="_Save" IsEnabled="False"></MenuItem>
-                <MenuItem Header="_Save As"></MenuItem>
-                <MenuItem Header="_Exit"></MenuItem>
+                <MenuItem Header="_New" Command="{Binding Path=NewMenuCommand}"></MenuItem>
+                <MenuItem Header="_Open" Command="{Binding Path=OpenMenuCommand}"></MenuItem>
+                <MenuItem Header="_Save" Command="{Binding Path=SaveMenuCommand}"></MenuItem>
+                <MenuItem Header="_Save As" Command="{Binding Path=SaveAsMenuCommand}"></MenuItem>
+                <MenuItem Header="_Exit" Command="{Binding Path=ExitMenuCommand}"></MenuItem>
 
             </MenuItem>
         </Menu>

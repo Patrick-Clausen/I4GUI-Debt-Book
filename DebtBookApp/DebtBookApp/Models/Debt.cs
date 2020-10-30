@@ -14,6 +14,10 @@ namespace DebtBookApp
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
+        public Debt()
+        {
+            date = DateTime.Now;
+        }
         public Debt(double initialValue, DateTime timestamp)
         {
             amount = initialValue;
@@ -57,7 +61,7 @@ namespace DebtBookApp
 
 
         private DateTime date;
-        public string Date
+        public string StringDate
         {
             get
             {
@@ -71,6 +75,19 @@ namespace DebtBookApp
                     date = DateTime.Parse(value);
                 }
                 catch (Exception) { }
+                OnPropertyChanged();
+            }
+        }
+
+        public DateTime Date
+        {
+            get
+            {
+                return date;
+            }
+            set
+            {
+                date = value;
                 OnPropertyChanged();
             }
         }
