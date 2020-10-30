@@ -21,5 +21,14 @@ namespace DebtBookApp
         {
             InitializeComponent();
         }
+
+        private void BtnSave_Click(object sender, RoutedEventArgs e)
+        {
+            var vm = DataContext as AddDebtorWindowViewModel;
+            if (vm.IsValid)
+                DialogResult = true;
+            else
+                MessageBox.Show("Enter values for name and initial value", "Missing data");
+        }
     }
 }
