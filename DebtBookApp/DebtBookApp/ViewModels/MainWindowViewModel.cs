@@ -3,6 +3,7 @@ using Prism.Commands;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
 using System.Windows.Input;
 
 namespace DebtBookApp
@@ -48,8 +49,11 @@ namespace DebtBookApp
         private void AddDebtorButtonPressedCommandHandler()
         {
             Debtor debtorUnderCreation = new Debtor();
-            AddDebtorWindowViewModel addDebtorWindowViewModel = new AddDebtorWindowViewModel(ref debtorUnderCreation);
+            
             AddDebtorWindow addDebtorWindow = new AddDebtorWindow();
+            AddDebtorWindowViewModel addDebtorWindowViewModel = new AddDebtorWindowViewModel(ref debtorUnderCreation, ref addDebtorWindow);
+            addDebtorWindow.DataContext = addDebtorWindowViewModel;
+            addDebtorWindow.Owner = Application.Current.MainWindow;
 
             if (addDebtorWindow.ShowDialog() == true)
             {
@@ -70,10 +74,13 @@ namespace DebtBookApp
         private void ListViewItemDoubleClickedCommandHandler(Debtor doubleClickedDebtor)
         {
             Debtor copiedDebtor = new Debtor(doubleClickedDebtor);
-            AddDebtWindowViewModel addDebtWindowViewModel = new AddDebtWindowViewModel(ref copiedDebtor);
-            AddDebtorWindow addDebtorWindow = new AddDebtorWindow();
+            
+            AddDebtWindow addDebtWindow = new AddDebtWindow();
+            AddDebtWindowViewModel addDebtWindowViewModel = new AddDebtWindowViewModel(ref copiedDebtor, ref addDebtWindow);
+            addDebtWindow.DataContext = addDebtWindowViewModel;
+            addDebtWindow.Owner = Application.Current.MainWindow;
 
-            if (addDebtorWindow.ShowDialog() == true)
+            if (addDebtWindow.ShowDialog() == true)
             {
                 doubleClickedDebtor.Debts = copiedDebtor.Debts;
                 doubleClickedDebtor.Name = copiedDebtor.Name;

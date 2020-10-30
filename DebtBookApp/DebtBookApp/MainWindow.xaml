@@ -42,8 +42,8 @@
         <ListView x:Name="DebtorList" Grid.Row="2" Grid.Column="0" Margin="10" ScrollViewer.VerticalScrollBarVisibility="Visible" ItemsSource="{Binding Path=Debtors}">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Name" Width="Auto" DisplayMemberBinding="{Binding Path=Name}"></GridViewColumn>
-                    <GridViewColumn Header="Debt" Width="Auto" DisplayMemberBinding="{Binding Path=Debt}"></GridViewColumn>
+                    <GridViewColumn Header="Name" Width="100" DisplayMemberBinding="{Binding Path=Name}"></GridViewColumn>
+                    <GridViewColumn Header="Debt" Width="100" DisplayMemberBinding="{Binding Path=Debt}"></GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>

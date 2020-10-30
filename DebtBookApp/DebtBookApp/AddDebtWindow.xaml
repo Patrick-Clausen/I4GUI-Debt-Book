@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:DebtBookApp"
         mc:Ignorable="d"
         Title="Debts" Height="450" Width="800"
-        DialogResult="{Binding Path=DebtorModifed}"
+        WindowStartupLocation="CenterOwner"
         >
     <Grid>
         <Grid.ColumnDefinitions>
@@ -20,8 +20,13 @@
                 <RowDefinition Height="1*"></RowDefinition>
             </Grid.RowDefinitions>
 
-            <ListView Grid.Row="0" ScrollViewer.VerticalScrollBarVisibility="Visible" >
-
+            <ListView x:Name="DebtorList" Grid.Row="0" Grid.Column="0" Margin="10" ScrollViewer.VerticalScrollBarVisibility="Visible" ItemsSource="{Binding Path=DebtorToModify.Debts}">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Amount" Width="100" DisplayMemberBinding="{Binding Path=Amount}"></GridViewColumn>
+                        <GridViewColumn Header="Date" Width="100" DisplayMemberBinding="{Binding Path=Date}"></GridViewColumn>
+                    </GridView>
+                </ListView.View>
             </ListView>
 
             <Button Grid.Row="1" Margin="10">Close</Button>
