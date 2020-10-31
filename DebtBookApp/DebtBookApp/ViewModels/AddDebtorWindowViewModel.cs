@@ -73,8 +73,7 @@ namespace DebtBookApp
             {
                 return _SaveButtonCommand ?? (_SaveButtonCommand = new DelegateCommand(
                         SaveBtnCommand_Execute, SaveBtnCommand_CanExecute)
-                    .ObservesProperty(() => DebtorToCreate.Name)
-                    .ObservesProperty(() => DebtorToCreate.Debt));
+                    .ObservesProperty(() => DebtorToCreate.Name));
             }
         }
 
