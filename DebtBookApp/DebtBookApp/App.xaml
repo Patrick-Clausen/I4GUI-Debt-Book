@@ -4,6 +4,42 @@
              xmlns:local="clr-namespace:DebtBookApp"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <Style TargetType="{x:Type Control}">
+            <Setter Property="Foreground" Value="White"></Setter>
+        </Style>
+        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Control}}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid>
+                            <Rectangle x:Name="ButtonRectangle" Fill="#555555" RadiusX="5" RadiusY="5"></Rectangle>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"></ContentPresenter>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Button.IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonRectangle" Property="Fill" Value="#444444"/>
+                            </Trigger>
+                            <Trigger Property="Button.IsEnabled" Value="False">
+                                <Setter TargetName="ButtonRectangle" Property="Fill" Value="#999999"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="FontWeight" Value="Bold"></Setter>
+        </Style>
+        <Style x:Key="CustomTextBox" TargetType="TextBox" BasedOn="{StaticResource {x:Type Control}}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Grid>
+                            <Rectangle Fill="#555555" RadiusX="5" RadiusY="5"></Rectangle>
+                            <TextBox Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Foreground="White" HorizontalAlignment="Stretch" VerticalAlignment="Center" BorderThickness="0"></TextBox>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="FontWeight" Value="Bold"></Setter>
+        </Style>
     </Application.Resources>
 </Application>
