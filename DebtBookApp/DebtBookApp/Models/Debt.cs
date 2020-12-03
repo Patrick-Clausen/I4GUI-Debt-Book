@@ -6,8 +6,10 @@ using System.Text;
 
 namespace DebtBookApp
 {
+    [Serializable]
     public class Debt : INotifyPropertyChanged
     {
+        [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = null)
         {

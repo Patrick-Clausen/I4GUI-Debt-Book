@@ -9,6 +9,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
+using System.Xml.Serialization;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using Prism.Mvvm;
@@ -106,6 +107,7 @@ namespace DebtBookApp
         public void NewMenuCommandHandler()
         {
             debtors = new ObservableCollection<Debtor>();
+            fileName = string.Empty;
             RaisePropertyChanged("debtors");
         }
 
@@ -127,11 +129,9 @@ namespace DebtBookApp
             if (openFileDialog.ShowDialog() == true)
             {
                 FileStream fs = new FileStream(@openFileDialog.FileName, FileMode.Open);
-                byte[] bytes = new byte[fs.Length];
-                await fs.ReadAsync(bytes);
+                BinaryFormatter formatter = new BinaryFormatter();
+                debtors = formatter.Deserialize(fs) as ObservableCollection<Debtor>;
                 fs.Close();
-                string jsonformatted = Encoding.UTF8.GetString(bytes);
-                debtors = JsonConvert.DeserializeObject<ObservableCollection<Debtor>>(jsonformatted);
                 RaisePropertyChanged("Debtors");
                 fileName = openFileDialog.FileName;
             }
@@ -153,8 +153,8 @@ namespace DebtBookApp
         private async void SaveMenuCommandHandler()
         {
             FileStream fs = new FileStream(fileName, FileMode.Truncate);
-            string jsonformatted = JsonConvert.SerializeObject(debtors);
-            await fs.WriteAsync(Encoding.UTF8.GetBytes(jsonformatted));
+            BinaryFormatter formatter = new BinaryFormatter();
+            formatter.Serialize(fs, Debtors);
             fs.Close();
         }
 
@@ -175,9 +175,10 @@ namespace DebtBookApp
             saveFileDialog.Filter = "Debt file (*.dbt)|*.dbt";
             if (saveFileDialog.ShowDialog() == true)
             {
+
                 FileStream fs = new FileStream(@saveFileDialog.FileName, FileMode.Create);
-                string jsonformatted = JsonConvert.SerializeObject(debtors);
-                await fs.WriteAsync(Encoding.UTF8.GetBytes(jsonformatted));
+                BinaryFormatter formatter = new BinaryFormatter();
+                formatter.Serialize(fs, Debtors);
                 fs.Close();
                 fileName = saveFileDialog.FileName;
             }

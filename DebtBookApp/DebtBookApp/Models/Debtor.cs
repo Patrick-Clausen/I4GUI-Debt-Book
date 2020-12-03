@@ -5,12 +5,22 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Xml.Serialization;
+using Newtonsoft.Json;
 using Prism.Mvvm;
 
 namespace DebtBookApp
 {
-    public class Debtor : BindableBase
+    [Serializable]
+    public class Debtor : INotifyPropertyChanged
     {
+        [field: NonSerialized]
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
 
         public Debtor()
         {
@@ -31,11 +41,13 @@ namespace DebtBookApp
             //Sort, resubscribe and raise property changes so list and total are updated
             debts = new ObservableCollection<Debt>(debts.OrderBy(debts => debts.Date).ToList());
             debts.CollectionChanged += CollectionChangedHandler;
-            RaisePropertyChanged("debts");
-            RaisePropertyChanged("Debt");
+            OnPropertyChanged("Debts");
+            OnPropertyChanged("Debt");
+
         }
 
         private ObservableCollection<Debt> debts;
+
         public ObservableCollection<Debt> Debts
         {
             get
@@ -44,7 +56,8 @@ namespace DebtBookApp
             }
             set
             {
-                SetProperty(ref debts, value);
+                debts = value;
+                OnPropertyChanged();
             }
         }
 
@@ -71,7 +84,8 @@ namespace DebtBookApp
             }
             set
             {
-                SetProperty(ref name, value);
+                name = value;
+                OnPropertyChanged();
             }
         }
     }
